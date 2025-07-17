@@ -1,15 +1,9 @@
-package pojo;
+package DTO;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@ToString
-public class Main {
+@Data
+public class MainResponse {
 
     private double temp;
     private double feels_like;

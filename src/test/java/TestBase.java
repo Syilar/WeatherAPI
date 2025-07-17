@@ -1,18 +1,34 @@
-import org.junit.jupiter.api.BeforeEach;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.junit.jupiter.api.BeforeAll;
+import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
+import java.io.InputStream;
 
 public class TestBase {
 
-    protected String authorizationToken = "56b12fd7de51ca3ed64805aa3b92a183";
+    protected static String WEATHER_URL;
+    protected static String WEATHER_PATH;
+    private static final Dotenv dotenv = Dotenv
+            .configure()
+            .filename("file.env")
+            .load();
 
-    @BeforeEach
-    public void setUp() throws IOException {
-        Properties properties = new Properties();
-        FileInputStream in = new FileInputStream("src/test/resources/application.properties");
-        properties.load(in);
-        authorizationToken = properties.getProperty("authorizationToken");
+    public static final String AUTHORIZATION_TOKEN = dotenv.get("AUTHORIZATION_TOKEN");
+
+    @BeforeAll
+    public static void setUp() throws IOException {
+        Yaml yaml = new Yaml();
+        InputStream inputStream = TestBase.class
+                .getClassLoader()
+                .getResourceAsStream("application.yml");
+        if (inputStream == null) {
+            throw new IOException("application.yml not found");
+        }
+
+        WeatherEndpoints weatherEndpoints = yaml.loadAs(inputStream, WeatherEndpoints.class);
+
+        WEATHER_URL = System.getProperty("api.url", weatherEndpoints.getUrl());
+        WEATHER_PATH = System.getProperty("api.path", weatherEndpoints.getPath());
     }
 }
