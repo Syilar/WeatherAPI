@@ -11,7 +11,7 @@ public class TestBase {
     protected static String WEATHER_PATH;
     private static final Dotenv dotenv = Dotenv
             .configure()
-            .filename("file.env")
+            .filename(".env")
             .load();
 
     public static final String AUTHORIZATION_TOKEN = dotenv.get("AUTHORIZATION_TOKEN");

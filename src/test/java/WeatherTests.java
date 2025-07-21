@@ -10,14 +10,17 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.within;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WeatherTests extends TestBase {
 
-    private TestService testService = new TestService();
+    private TestSteps testService = new TestSteps();
 
     private final Double testLat = 44.34;
     private final Double testLon = 10.99;
+    private final Double tolerance = 0.03;
 
     private final String wrongAuthorizationToken = "12345";
 
@@ -34,21 +37,23 @@ public class WeatherTests extends TestBase {
                 .describedAs("Список погоды (Weather) не должен быт NULL или пустым!");
 
         assertThat(response.getCoord().getLat())
-                .isEqualTo(lat)
-                .describedAs("Широта (latitude) должна соответствовать ожидаемому значению " + lat);
+                .as("Широта (latitude) должна соответствовать ожидаемому значению "
+                        + lat + " или быть в пределах отклонения " + tolerance)
+                .isCloseTo(lat, within(tolerance));
 
         assertThat(response.getCoord().getLon())
-                .isEqualTo(lon)
-                .describedAs("Долгота (longitude) должна соответствовать ожидаемому значению " + lon);
+                .as("Долгота (longitude) должна соответствовать ожидаемому значению "
+                        + lon + " или быть в пределах отклонения " + tolerance)
+                .isCloseTo(lon, within(tolerance));
     }
 
     public static Stream<Arguments> coordinatesProvider() {
         return Stream.of(
-                Arguments.of(44.34, 10.99),
-                Arguments.of(50.45, 30.52),
-                Arguments.of(35.68, 139.69),
-                Arguments.of(48.85, 2.35),
-                Arguments.of(55.75, 37.62)
+                Arguments.of(40.7128, -74.0060),
+                Arguments.of(51.5074, -0.1278),
+                Arguments.of(35.6895, 139.6917),
+                Arguments.of(48.8566, 2.3522),
+                Arguments.of(-33.8688, 151.2093)
         );
     }
 

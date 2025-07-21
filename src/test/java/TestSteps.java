@@ -3,7 +3,7 @@ import DTO.WeatherAllResponse;
 
 import static io.restassured.RestAssured.given;
 
-public class TestService {
+public class TestSteps {
 
     @Step("Отправка GET запроса к API погоды с координатами: lat={lat}, lon={lon}")
     public WeatherAllResponse getResponse(double lat, double lon, String token) {
